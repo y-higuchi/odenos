@@ -2,16 +2,16 @@ language: java
 jdk:
   - oraclejdk7
   - openjdk7
+  - oraclejdk8
 
 branches:
   only:
     - develop
+    - travis
 
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install redis-server
   - sudo service redis-server restart
-  - mvn install -DskipTests=true
+  - mvn install -DskipTests=true -T 1C
 
 script:
-  - mvn test
+  - mvn test javadoc:javadoc -T 1C
