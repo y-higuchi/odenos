@@ -5,8 +5,9 @@ jdk:
   - oraclejdk8
 
 branches:
-  exclude:
-    - master
+  only:
+    - develop
+    - travis
 
 before_install:
   - sudo service redis-server restart
