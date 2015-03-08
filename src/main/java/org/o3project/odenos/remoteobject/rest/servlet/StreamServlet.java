@@ -65,7 +65,7 @@ public class StreamServlet extends HttpServlet {
 
     if (session.getAttribute(Attributes.SUBSCRIPTION_TABLE) == null) {
       // new session
-      this.logger.info("New stream: {}", subscriptionId);
+      StreamServlet.logger.info("New stream: {}", subscriptionId);
       session.setAttribute(Attributes.SUBSCRIPTION_TABLE, new HashMap<String, Set<String>>());
 
       resp.setHeader("Content-type", "application/json");

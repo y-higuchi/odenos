@@ -84,7 +84,7 @@ public class RESTTranslator extends RemoteObject {
     public void sessionDestroyed(HttpSessionEvent se) {
       HttpSession session = se.getSession();
       String subscriptionId = session.getId();
-      RESTTranslator.this.logger.info("A session ({}) has been destroyed.", subscriptionId);
+      RESTTranslator.logger.info("A session ({}) has been destroyed.", subscriptionId);
 
       AsyncContext context = RESTTranslator.this.removeAsyncContext(subscriptionId);
       context.complete(); // need it?
@@ -139,7 +139,7 @@ public class RESTTranslator extends RemoteObject {
         try {
           this.server.stop();
         } catch (Exception e) {
-          this.logger.warn("Failed to stop the existing Jetty server.", e);
+          RESTTranslator.logger.warn("Failed to stop the existing Jetty server.", e);
         } finally {
           this.server = null;
         }
@@ -187,7 +187,7 @@ public class RESTTranslator extends RemoteObject {
           try {
             RESTTranslator.this.server.start();
           } catch (Exception e) {
-            RESTTranslator.this.logger.error("Failed to start the Jetty server.", e);
+            RESTTranslator.logger.error("Failed to start the Jetty server.", e);
             return;
           }
         }
@@ -195,7 +195,7 @@ public class RESTTranslator extends RemoteObject {
         try {
           RESTTranslator.this.server.join();
         } catch (InterruptedException e) {
-          RESTTranslator.this.logger.error("Failed to join the Jetty server.", e);
+          RESTTranslator.logger.error("Failed to join the Jetty server.", e);
           return;
         }
       }
@@ -295,7 +295,7 @@ public class RESTTranslator extends RemoteObject {
     try {
       this.applyEventSubscription();
     } catch (Exception e) {
-      this.logger.warn("Failed to update the ODENOS Event subscription.",
+      RESTTranslator.logger.warn("Failed to update the ODENOS Event subscription.",
           e);
     }
   }
@@ -314,7 +314,7 @@ public class RESTTranslator extends RemoteObject {
       subscriptionIds =
           this.distributionTable.get(new DistKey(event.publisherId, event.eventType));
       if (subscriptionIds == null || subscriptionIds.isEmpty()) {
-        this.logger.warn("No one subscribes the {} of objectId:{}.",
+        RESTTranslator.logger.warn("No one subscribes the {} of objectId:{}.",
             event.publisherId, event.eventType);
 
         this.distributionTable.remove(new DistKey(event.publisherId, event.eventType));
@@ -322,7 +322,7 @@ public class RESTTranslator extends RemoteObject {
         try {
           this.applyEventSubscription();
         } catch (Exception e) {
-          this.logger.warn(
+          RESTTranslator.logger.warn(
               "Failed to update the ODENOS Event subscription.", e);
         }
         return;
@@ -331,10 +331,10 @@ public class RESTTranslator extends RemoteObject {
 
     Value value;
     try {
-      byte[] packed = this.messagePack.write(event);
-      value = this.messagePack.read(packed);
+      byte[] packed = RESTTranslator.messagePack.write(event);
+      value = RESTTranslator.messagePack.read(packed);
     } catch (IOException e) {
-      this.logger.error("Failed to reserialize the Event object.", e);
+      RESTTranslator.logger.error("Failed to reserialize the Event object.", e);
       return;
     }
 
@@ -347,7 +347,7 @@ public class RESTTranslator extends RemoteObject {
       try {
         context.getResponse().getWriter().write(value.toString());
       } catch (IOException e) {
-        this.logger.error("Failed to write the Event object as an HTTP response", e);
+        RESTTranslator.logger.error("Failed to write the Event object as an HTTP response", e);
       }
       context.complete();
     }

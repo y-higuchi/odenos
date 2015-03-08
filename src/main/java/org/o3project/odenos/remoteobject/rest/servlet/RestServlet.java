@@ -87,7 +87,7 @@ public class RestServlet extends HttpServlet {
       }
 
       String path = root + req.getPathInfo();
-      this.logger.debug("Trying to read \"{}\".", path);
+      RestServlet.logger.debug("Trying to read \"{}\".", path);
 
       InputStream in = null;
       try {
@@ -130,7 +130,7 @@ public class RestServlet extends HttpServlet {
     try {
       odenosResp = translator.request(objectId, method, path, reqBody);
     } catch (Exception e) {
-      this.logger.debug("Failed to request [{}, {}, {}, {}]",
+      RestServlet.logger.debug("Failed to request [{}, {}, {}, {}]",
           objectId, method, path, reqBody, e);
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       return;
@@ -143,7 +143,7 @@ public class RestServlet extends HttpServlet {
         byte[] packed = this.messagePack.write(odenosResp);
         value = this.messagePack.read(packed);
       } catch (IOException e) {
-        this.logger.debug("Failed to serialize a response body. /req:[{}, {}, {}, {}]",
+        RestServlet.logger.debug("Failed to serialize a response body. /req:[{}, {}, {}, {}]",
             objectId, method, path, reqBody);
         resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
